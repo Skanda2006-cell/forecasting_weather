@@ -19,7 +19,7 @@ city_list = load_cities()
 weather_media = {
     "Clear": {
         "icon": "☀️",
-        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # sunny day video
+        "video": "https://www.youtube.com/watch?v=IWw4T5XxFBQ"  # sunny day video
     },
     "Clouds": {
         "icon": "☁️",
