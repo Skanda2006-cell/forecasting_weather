@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import pandas as pd
+# Page config
+st.set_page_config(page_title="Weather Wizard 🌦️", page_icon="🌦️", layout="wide")
 
 # Load city data (cached for performance)
 @st.cache_data
@@ -67,8 +69,7 @@ def get_weather(city):
     except:
         return None
 
-# Page config
-st.set_page_config(page_title="Weather Wizard 🌦️", page_icon="🌦️", layout="wide")
+
 
 # Title with style
 st.markdown("""
