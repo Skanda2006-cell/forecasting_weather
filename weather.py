@@ -109,12 +109,26 @@ if st.button("🔍 Get Forecast"):
             st.write(f"💨 Wind Speed: {wind_speed} m/s")
 
         with col2:
-            # Embed YouTube video for current weather
-            st.markdown("### Weather vibes 🎥")
-            st.video(media['video'], start_time=5)  # start time to skip intro
+    st.markdown("### Weather vibes 🎥")
 
-        st.markdown("---")
-        st.caption("🌍 Powered by OpenWeatherMap & curated weather videos 🎬")
-
+    # Convert standard YouTube URL to embeddable format
+    raw_url = media['video']
+    if "watch?v=" in raw_url:
+        embed_url = raw_url.replace("watch?v=", "embed/").split("&")[0]
+    elif "youtu.be" in raw_url:
+        video_id = raw_url.split("/")[-1].split("?")[0]
+        embed_url = f"https://www.youtube.com/embed/{video_id}"
     else:
-        show_error()
+        embed_url = raw_url  # fallback
+
+    # Autoplay HTML embed
+    autoplay_html = f"""
+    <iframe width="100%" height="315"
+    src="{embed_url}?autoplay=1&mute=1&controls=1"
+    title="Weather video" frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+    </iframe>
+    """
+    st.markdown(autoplay_html, unsafe_allow_html=True)
+
