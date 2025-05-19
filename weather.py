@@ -121,11 +121,11 @@ if st.button("🔍 Get Forecast"):
     else:
         embed_url = raw_url
 
-    # Centered square video just below the title
+    # Embedded square video with minimal vertical gap (5px ≈ 0.5cm)
     square_video_html = f"""
-    <div style="display: flex; justify-content: center; margin-top: 10px;">
+    <div style="display: flex; justify-content: center; margin-top: 5px;">
         <iframe width="300" height="300"
-        src="{embed_url}?autoplay=1&mute=1&controls=1"
+        src="{embed_url}?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0"
         title="Weather video" frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen style="border-radius: 16px;">
@@ -133,3 +133,4 @@ if st.button("🔍 Get Forecast"):
     </div>
     """
     st.markdown(square_video_html, unsafe_allow_html=True)
+
