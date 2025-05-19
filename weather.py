@@ -1,76 +1,92 @@
 import streamlit as st
 import requests
 import pandas as pd
-
-# Page Configuration
+# Page config
 st.set_page_config(page_title="Weather Wizard 🌦️", page_icon="🌦️", layout="wide")
 
-# Load City + Country List
+# Load city data (cached for performance)
 @st.cache_data
-def load_city_country_pairs():
+def load_cities():
     try:
         df = pd.read_csv("worldcities.csv")
-        df = df[['city', 'country']].dropna().drop_duplicates()
-        df['label'] = df['city'] + ", " + df['country']
-        return df.sort_values('label')
+        return sorted(df['city'].dropna().unique().tolist())
     except:
-        return pd.DataFrame({'label': ["Delhi, India", "Mumbai, India", "New York, United States"]})
+        return ["Bangalore", "Delhi", "Mumbai", "New York"]  # fallback
 
-city_df = load_city_country_pairs()
+city_list = load_cities()
 
-# Weather condition media mapping
+# Map weather conditions to emojis & YouTube videos
 weather_media = {
-    "Clear": {"icon": "☀️", "video": "https://www.youtube.com/embed/0_jNjpVxUt0"},
-    "Clouds": {"icon": "☁️", "video": "https://www.youtube.com/embed/Jptq6mUa5IE"},
-    "Rain": {"icon": "🌧️", "video": "https://www.youtube.com/embed/SnUBb-FAlCY"},
-    "Drizzle": {"icon": "🌦️", "video": "https://www.youtube.com/embed/lSMVVLR9KIs"},
-    "Thunderstorm": {"icon": "⛈️", "video": "https://www.youtube.com/embed/aPoXzzo2cSc"},
-    "Snow": {"icon": "❄️", "video": "https://www.youtube.com/embed/7BrIJrjxVxA"},
-    "Mist": {"icon": "🌫️", "video": "https://www.youtube.com/embed/w3PDyTWlStk"},
-    "Default": {"icon": "🌈", "video": "https://www.youtube.com/embed/QVGwC-tywO4"}
+    "Clear": {
+        "icon": "☀️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # sunny day video
+    },
+    "Clouds": {
+        "icon": "☁️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # cloudy sky video
+    },
+    "Rain": {
+        "icon": "🌧️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # raining video
+    },
+    "Drizzle": {
+        "icon": "🌦️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"
+    },
+    "Thunderstorm": {
+        "icon": "⛈️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # thunderstorm video
+    },
+    "Snow": {
+        "icon": "❄️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # snow video
+    },
+    "Mist": {
+        "icon": "🌫️",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # misty weather video
+    },
+    # Default fallback
+    "Default": {
+        "icon": "🌈",
+        "video": "https://youtu.be/LlgLUQ2tx10?si=pmzwnLb9AVARK-GN"  # relaxing nature video
+    }
 }
 
-# Error Handler
+# Counterattack error function
 def show_error():
-    st.error("💥 Weather server dodged our request like a ninja! Try again or check your city name.")
+    st.error("💥 Oops! Weather server dodged our request like a ninja. Try again or check the city name.")
 
-# Weather Fetcher
-def get_weather(city, country, units="metric"):
+# Function to fetch weather data
+def get_weather(city):
     try:
-        API_KEY = "4d8fb5b93d4af21d66a2948710284366"
-        query = f"{city},{country}"
-        URL = f"http://api.openweathermap.org/data/2.5/weather?q={query}&appid={API_KEY}&units={units}"
+        API_KEY = "4d8fb5b93d4af21d66a2948710284366"  # Replace with your API key
+        URL = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
         response = requests.get(URL)
         if response.status_code == 200:
             return response.json()
-        return None
+        else:
+            return None
     except:
         return None
 
-# Stylish Title
+
+
+# Title with style
 st.markdown("""
-    <h1 style='text-align:center; color:#4B89DC; font-family: "Segoe UI", sans-serif;'>
+    <h1 style='text-align:center; color:#4B89DC; font-family: Comic Sans MS, cursive;'>
         🧙‍♂️ Weather Wizard 🌦️
     </h1>
 """, unsafe_allow_html=True)
 
-st.write("Start typing your city and country:")
+st.write("Start typing your city name and pick from the list:")
 
-# City Selector with Country
-city_label = st.selectbox(
-    "📍 Choose your location (City, Country)",
-    options=city_df['label'].tolist(),
-    index=city_df['label'].tolist().index("Delhi, India") if "Delhi, India" in city_df['label'].tolist() else 0
-)
+# City selector
+city = st.selectbox("📍 Choose your city", options=city_list, index=city_list.index("Delhi") if "Delhi" in city_list else 0)
 
-# Extract city and country for query
-city_row = city_df[city_df['label'] == city_label].iloc[0]
-selected_city = city_row['city']
-selected_country = city_row['country']
-
-# Get Weather Button
+# Fetch and display weather
 if st.button("🔍 Get Forecast"):
-    data = get_weather(selected_city, selected_country)
+
+    data = get_weather(city)
 
     if data:
         weather_main = data['weather'][0]['main']
@@ -82,29 +98,23 @@ if st.button("🔍 Get Forecast"):
 
         media = weather_media.get(weather_main, weather_media["Default"])
 
-        # Layout
+        # Layout with columns
         col1, col2 = st.columns([1, 2])
+
         with col1:
-            st.markdown(f"<h2 style='color:#f39c12;'>{media['icon']} Weather in <strong>{selected_city.title()}, {selected_country}</strong></h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color:#f39c12;'>{media['icon']} Weather in <strong>{city.title()}</strong></h2>", unsafe_allow_html=True)
             st.write(f"**Condition:** {weather_desc}")
             st.write(f"🌡️ Temperature: {temp}°C (Feels like {feels_like}°C)")
             st.write(f"💧 Humidity: {humidity}%")
             st.write(f"💨 Wind Speed: {wind_speed} m/s")
 
         with col2:
+            # Embed YouTube video for current weather
             st.markdown("### Weather vibes 🎥")
-            st.markdown(f"""
-                <div style="position: relative; width: 100%; max-width: 600px; padding-top: 50%;">
-                    <iframe src="{media['video']}?autoplay=1&start=5&mute=1"
-                            frameborder="0"
-                            allow="autoplay; encrypted-media"
-                            allowfullscreen
-                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                    </iframe>
-                </div>
-            """, unsafe_allow_html=True)
+            st.video(media['video'], start_time=5)  # start time to skip intro
 
         st.markdown("---")
         st.caption("🌍 Powered by OpenWeatherMap & curated weather videos 🎬")
+
     else:
         show_error()
