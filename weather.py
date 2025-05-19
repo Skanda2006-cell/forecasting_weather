@@ -108,7 +108,7 @@ if st.button("🔍 Get Forecast"):
             st.write(f"💧 Humidity: {humidity}%")
             st.write(f"💨 Wind Speed: {wind_speed} m/s")
 
-       with col2:
+        with col2:
             st.markdown("### Weather vibes 🎥")
 
     # Convert to embeddable YouTube URL
