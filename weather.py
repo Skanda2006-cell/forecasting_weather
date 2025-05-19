@@ -109,7 +109,7 @@ if st.button("🔍 Get Forecast"):
             st.write(f"💨 Wind Speed: {wind_speed} m/s")
 
         with col2:
-    st.markdown("### Weather vibes 🎥")
+            st.markdown("### Weather vibes 🎥")
 
     # Convert standard YouTube URL to embeddable format
     raw_url = media['video']
