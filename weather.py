@@ -108,10 +108,10 @@ if st.button("🔍 Get Forecast"):
             st.write(f"💧 Humidity: {humidity}%")
             st.write(f"💨 Wind Speed: {wind_speed} m/s")
 
-        with col2:
+       with col2:
             st.markdown("### Weather vibes 🎥")
 
-    # Convert standard YouTube URL to embeddable format
+    # Convert to embeddable YouTube URL
     raw_url = media['video']
     if "watch?v=" in raw_url:
         embed_url = raw_url.replace("watch?v=", "embed/").split("&")[0]
@@ -119,16 +119,15 @@ if st.button("🔍 Get Forecast"):
         video_id = raw_url.split("/")[-1].split("?")[0]
         embed_url = f"https://www.youtube.com/embed/{video_id}"
     else:
-        embed_url = raw_url  # fallback
+        embed_url = raw_url
 
-    # Autoplay HTML embed
+    # Small embedded iframe (300px height for compact view)
     autoplay_html = f"""
-    <iframe width="100%" height="315"
+    <iframe width="100%" height="200"
     src="{embed_url}?autoplay=1&mute=1&controls=1"
     title="Weather video" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
+    allowfullscreen style="border-radius: 10px;">
     </iframe>
     """
     st.markdown(autoplay_html, unsafe_allow_html=True)
-
