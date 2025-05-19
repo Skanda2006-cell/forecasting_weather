@@ -121,13 +121,15 @@ if st.button("🔍 Get Forecast"):
     else:
         embed_url = raw_url
 
-    # Small embedded iframe (300px height for compact view)
+    # Square video display
     autoplay_html = f"""
-    <iframe width="100%" height="200"
-    src="{embed_url}?autoplay=1&mute=1&controls=1"
-    title="Weather video" frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen style="border-radius: 10px;">
-    </iframe>
+    <div style="display: flex; justify-content: center;">
+        <iframe width="300" height="300"
+        src="{embed_url}?autoplay=1&mute=1&controls=1"
+        title="Weather video" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen style="border-radius: 12px;">
+        </iframe>
+    </div>
     """
     st.markdown(autoplay_html, unsafe_allow_html=True)
